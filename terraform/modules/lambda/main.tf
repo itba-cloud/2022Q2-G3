@@ -3,23 +3,18 @@
 # ------------------------------------------------------------------------------
 
 resource "aws_lambda_function" "this" {
-
-  filename      = var.lambda_info.filename
-  function_name = var.lambda_info.function_name
-  role          = var.iam_role_arn
-  handler       = var.lambda_info.handler
+  filename      = var.package
+  function_name = var.function_name
+  role          = var.iam_role
+  handler       = var.handler
   runtime       = var.runtime
+  tags          = var.tags
 
-  tags = {
-    name = "lambda${var.lambda_info.function_name}"
+  dynamic "vpc_config" {
+    for_each = var.vpc_subnet_ids != null && var.vpc_security_group_ids != null ? [true] : []
+    content {
+      security_group_ids = var.vpc_security_group_ids
+      subnet_ids         = var.vpc_subnet_ids
+    }
   }
-}
-
-resource "aws_lambda_permission" "this" {
-  statement_id  = "AllowExecutionFromAPIGateway"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.this.function_name
-  principal     = "apigateway.amazonaws.com"
-
-  source_arn = "${var.apigw_execution_arn}/*/${var.lambda_info.method}${var.lambda_info.path}"
 }

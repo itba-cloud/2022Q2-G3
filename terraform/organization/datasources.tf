@@ -13,6 +13,6 @@ data "aws_caller_identity" "current" {
 data "template_file" "userdata" {
   template = file("${path.module}/html/index.html")
   vars = {
-    ENDPOINT = "${aws_api_gateway_stage.this.invoke_url}"
+    ENDPOINT = "${module.apigw.api_endpoint}"
   }
 }

@@ -2,43 +2,57 @@
 # Amazon Lambda variables
 # ------------------------------------------------------------------------
 
-variable "account_id" {
+variable "package" {
+  description = "The absolute path to an existing zip-file to use."
   type        = string
-  description = "The current Accound ID"
+  default     = null
 }
 
-variable "local_path" {
+
+variable "function_name" {
+  description = "A unique name for your Lambda Function."
   type        = string
-  description = "Local path"
+  default     = ""
 }
 
-variable "lambda_info" {
-  type        = map(string)
-  description = "Contains all necesary lambda info"
-}
-
-variable "apigw_execution_arn" {
+variable "handler" {
+  description = "Lambda Function entrypoint in your code."
   type        = string
-  description = "API GW execution ARN"
-}
-
-variable "subnet_ids" {
-  type        = list(any)
-  description = "The list of subnets created"
-}
-
-variable "sg_ids" {
-  type        = list(any)
-  description = "The list of subnets created"
+  default     = ""
 }
 
 variable "runtime" {
+  description = "Lambda Function runtime."
   type        = string
-  description = "Lambda function runtime language"
-  default     = "python3.12"
+  default     = ""
 }
 
-variable "iam_role_arn" {
+variable "iam_role" {
+  description = "IAM role ARN attached to the Lambda Function."
   type        = string
-  description = "IAM role arn"
+  default     = ""
+}
+
+variable "tags" {
+  description = "A mapping of tags to assign to API gateway resources."
+  type        = map(string)
+  default     = {}
+}
+
+variable "source_arn" {
+  description = "Lambda source ARN."
+  type        = string
+  default     = ""
+}
+
+variable "vpc_subnet_ids" {
+  description = "List of subnet ids when Lambda Function should run in the VPC."
+  type        = list(string)
+  default     = null
+}
+
+variable "vpc_security_group_ids" {
+  description = "List of security group ids when Lambda Function should run in the VPC."
+  type        = list(string)
+  default     = null
 }

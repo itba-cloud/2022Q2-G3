@@ -19,7 +19,7 @@
 
 locals {
   name   = "ex-${replace(basename(path.cwd), "_", "-")}"
-  region = "eu-west-1"
+  region = "us-east-1"
 
   tags = {
     Example    = local.name
@@ -59,15 +59,6 @@ module "vpc" {
   enable_nat_gateway = true
   single_nat_gateway = true
 
-  # enable_vpn_gateway = false
-
-  # enable_dhcp_options = false
-
-  # enable_flow_log                      = true
-  # create_flow_log_cloudwatch_log_group = true
-  # create_flow_log_cloudwatch_iam_role  = true
-  # flow_log_max_aggregation_interval    = 60
-
   tags = local.tags
 }
 
@@ -90,11 +81,6 @@ module "vpc_endpoints" {
       private_dns_enabled = true
       subnet_ids          = module.vpc.private_subnets
     },
-    ses = {
-      service    = "ses"
-      subnet_ids = ["subnet-12345678", "subnet-87654321"]
-      tags       = { Name = "ses-vpc-endpoint" }
-    },
   }
 
   tags = merge(local.tags, {
@@ -103,11 +89,11 @@ module "vpc_endpoints" {
   })
 }
 
-module "vpc_endpoints_nocreate" {
-  source = "../../modules/vpc-endpoints"
+# module "vpc_endpoints_nocreate" {
+#   source = "terraform-aws-modules/vpc/aws//modules/vpc"
 
-  create = false
-}
+#   create = false
+# }
 
 ################################################################################
 # Supporting Resources
