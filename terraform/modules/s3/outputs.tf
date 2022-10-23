@@ -1,5 +1,5 @@
 # --------------------------------------------------------------------
-# Amazon S3 buckets output
+# Amazon S3 output
 # --------------------------------------------------------------------
 
 output "id" {
@@ -14,5 +14,5 @@ output "arn" {
 
 output "website_endpoint" {
   description = "The website endpoint, if the bucket is configured with a website. If not, this will be an empty string."
-  value       = aws_s3_bucket.this.website_endpoint
+  value       = aws_s3_bucket_website_configuration.this.website_endpoint
 }

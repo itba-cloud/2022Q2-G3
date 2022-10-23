@@ -26,7 +26,7 @@ variable "lambda_function_arn" {
 }
 
 variable "lambda_source_arn" {
-  type        = string
+  type = string
 }
 
 variable "lambda_function_name" {

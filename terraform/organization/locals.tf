@@ -30,7 +30,7 @@ locals {
 
   lambdas = {
     lambda = {
-      package      = "${local.path}/lambda/lambda.zip"
+      package       = "${local.path}/lambda/lambda.zip"
       function_name = "AWSLambdaHandler-${replace(local.bucket_name, "-", "")}"
       role          = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/LabRole"
       handler       = "lambda_handler.main"

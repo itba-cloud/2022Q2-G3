@@ -7,8 +7,8 @@ provider "aws" {
 
   default_tags {
     tags = {
-      author     = "g3"
-      version    = 1
+      author  = "g3"
+      version = 1
     }
   }
 }

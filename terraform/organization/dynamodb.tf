@@ -5,11 +5,11 @@ module "dynamodb" {
     aws = aws.aws
   }
 
-  name            = "AWSDynamoDB-g3"
-  billing_mode    = "PROVISIONED"
-  read_capacity   = 20
-  write_capacity  = 20
-  hash_key        = "id"
+  name           = "AWSDynamoDB-g3"
+  billing_mode   = "PROVISIONED"
+  read_capacity  = 20
+  write_capacity = 20
+  hash_key       = "id"
 
   attributes = [
     {
@@ -17,8 +17,8 @@ module "dynamodb" {
       type = "N"
     }
   ]
-  
-  tags = { 
+
+  tags = {
     name = "DynamoDB-stock"
   }
 }

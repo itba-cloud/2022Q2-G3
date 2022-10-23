@@ -11,7 +11,7 @@ module "cloudfront" {
   origin = {
     api-gateway = {
       domain_name = replace(replace(module.apigw.api_endpoint, "https://", ""), "/", "")
-      
+
       custom_origin_config = {
         http_port              = 80
         https_port             = 443
@@ -32,8 +32,8 @@ module "cloudfront" {
   }
 
   default_cache_behavior = {
-    target_origin_id        = "s3"
-    viewer_protocol_policy  = "allow-all"
+    target_origin_id       = "s3"
+    viewer_protocol_policy = "allow-all"
 
     allowed_methods = ["GET", "HEAD", "OPTIONS"]
     cached_methods  = ["GET", "HEAD"]

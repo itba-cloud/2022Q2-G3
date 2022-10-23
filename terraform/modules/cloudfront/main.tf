@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------------
-# Amazon Cloudfront
+# Amazon CloudFront
 # ---------------------------------------------------------------------------
 
 resource "aws_cloudfront_distribution" "this" {
@@ -12,18 +12,18 @@ resource "aws_cloudfront_distribution" "this" {
     for_each = var.origin
 
     content {
-      domain_name              = origin.value.domain_name
-      origin_id                = lookup(origin.value, "origin_id", origin.key)
-      origin_path              = lookup(origin.value, "origin_path", "")
+      domain_name = origin.value.domain_name
+      origin_id   = lookup(origin.value, "origin_id", origin.key)
+      origin_path = lookup(origin.value, "origin_path", "")
 
       dynamic "custom_origin_config" {
         for_each = length(lookup(origin.value, "custom_origin_config", "")) == 0 ? [] : [lookup(origin.value, "custom_origin_config", "")]
 
         content {
-          http_port                = custom_origin_config.value.http_port
-          https_port               = custom_origin_config.value.https_port
-          origin_protocol_policy   = custom_origin_config.value.origin_protocol_policy
-          origin_ssl_protocols     = custom_origin_config.value.origin_ssl_protocols
+          http_port              = custom_origin_config.value.http_port
+          https_port             = custom_origin_config.value.https_port
+          origin_protocol_policy = custom_origin_config.value.origin_protocol_policy
+          origin_ssl_protocols   = custom_origin_config.value.origin_ssl_protocols
         }
       }
     }
@@ -37,8 +37,8 @@ resource "aws_cloudfront_distribution" "this" {
       target_origin_id       = i.value["target_origin_id"]
       viewer_protocol_policy = i.value["viewer_protocol_policy"]
 
-      allowed_methods           = lookup(i.value, "allowed_methods", ["GET", "HEAD", "OPTIONS"])
-      cached_methods            = lookup(i.value, "cached_methods", ["GET", "HEAD"])
+      allowed_methods = lookup(i.value, "allowed_methods", ["GET", "HEAD", "OPTIONS"])
+      cached_methods  = lookup(i.value, "cached_methods", ["GET", "HEAD"])
 
       min_ttl     = lookup(i.value, "min_ttl", null)
       default_ttl = lookup(i.value, "default_ttl", null)
