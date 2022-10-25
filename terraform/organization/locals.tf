@@ -26,6 +26,10 @@ locals {
     www-website = {
       bucket_name = "www.${local.bucket_name}"
     }
+
+    logs = {
+      bucket_name = "${local.bucket_name}-logs"
+    }
   }
 
   lambdas = {

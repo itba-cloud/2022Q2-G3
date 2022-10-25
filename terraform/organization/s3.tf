@@ -6,8 +6,9 @@ module "s3" {
     aws = aws.aws
   }
 
-  bucket_name = each.value.bucket_name
-  objects     = try(each.value.objects, {})
+  bucket_name   = each.value.bucket_name
+  objects       = try(each.value.objects, {})
+  bucket_acl    = "public-read"
 }
 
 resource "aws_s3_object" "this" {
