@@ -6,7 +6,7 @@ module "apigw" {
   }
 
   depends_on = [
-    module.lambda
+    module.lambda, module.sqs
   ]
 
   name                 = "AWSAPIGateway-g3"
