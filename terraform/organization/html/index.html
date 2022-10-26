@@ -2,34 +2,49 @@
 <meta charset="UTF-8">
 <html>
     <head>
-        <title>ITBA - Cloud</title>
+        <title>BSMSapp</title>
         <div align="center">
-            <!-- Esta es mi función -->
-            <script>
-                function getImage() {
-                    var xhttp = new XMLHttpRequest();
-                    xhttp.onreadystatechange = function () {
-                        if (this.readyState == 4 && this.status == 200) {
-                            document.getElementById("replace").innerHTML = this.responseText;
-                        }
-                    };
-
-                xhttp.open("GET", "${ENDPOINT}/resource", true);
-                xhttp.send();   
-                }
-            </script>
     </head>
-        <!-- Este es mi código -->
         <br><br>
         <body bgcolor="#FFFFFF" text="Black">
-            <h1><span id="replace">Bienvenidos, estimados Alumnos.</span></h1>
-            
-            <button onclick="getImage()">Pinchame</button>
-            <br><br>
-            <img src="images/image1.png" , width=35%, height=35%>
+            <h1><span id="replace">BSMSapp</span></h1>
 
-            <p>Este lab está desarrollado por la cátedra de Cloud Computing</p>
+            <form id="myForm">
+                <input value="0" name="id"/>
+                <br>
+                <input value="0" name="stock"/>
+                <br><br>
+                <input type="submit" value="Upload"/>
+            </form>
         </body>
     </div>
 
 </html>
+
+<script>
+    const thisForm = document.getElementById('myForm');
+    thisForm.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        // console.log(thisForm)
+        // console.log(new FormData(thisForm).entries())
+        const formData = new FormData(thisForm).entries()
+        const str = JSON.stringify(Object.fromEntries(formData))
+        console.log(str.replace(/\"/g, ''))
+        let test = {
+            id: 212311111,
+            stock: 131211
+        }
+        const response = await fetch("${ENDPOINT}/resource", {
+            method: 'POST',
+            // mode: 'cors',
+            headers: { 
+                'Content-Type': 'application/json'
+            },
+            // body: str.replace(/\"/g, '')
+            body: JSON.stringify(test)
+        });
+
+        const result = await response.json();
+        console.log(result)
+    });
+</script>

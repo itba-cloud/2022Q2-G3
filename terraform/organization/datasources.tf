@@ -16,3 +16,15 @@ data "template_file" "userdata" {
     ENDPOINT = "${module.apigw.api_endpoint}"
   }
 }
+
+data "aws_iam_policy_document" "this" {
+  statement {
+    effect  = "Allow"
+    actions = ["dynamodb:PutItem"]
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+    resources = ["arn:aws:dynamodb:us-east-1:478157316333:table/AWSDynamoDB-g3"]
+  }
+}

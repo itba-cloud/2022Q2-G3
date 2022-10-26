@@ -1,3 +1,42 @@
+locals {
+  private_inbound = [
+      {
+        rule_number = 100
+        rule_action = "allow"
+        from_port   = 80
+        to_port     = 80
+        protocol    = "tcp"
+        cidr_block  = "10.0.1.0/24"
+      },
+      {
+        rule_number = 110
+        rule_action = "allow"
+        from_port   = 80
+        to_port     = 80
+        protocol    = "tcp"
+        cidr_block  = "10.0.2.0/24"
+      },
+  ]
+  private_outbound = [
+      {
+        rule_number = 100
+        rule_action = "allow"
+        from_port   = 443
+        to_port     = 443
+        protocol    = "tcp"
+        cidr_block  = "10.0.1.0/24"
+      },
+      {
+        rule_number = 110
+        rule_action = "allow"
+        from_port   = 443
+        to_port     = 443
+        protocol    = "tcp"
+        cidr_block  = "10.0.2.0/24"
+      },
+  ]
+}
+
 ################################################################################
 # VPC Module (from terraform-aws-modules)
 ################################################################################
@@ -24,6 +63,10 @@ module "vpc" {
   manage_default_route_table = true
   default_route_table_tags   = { Name = "vpc-g3-bsmsapp-default" }
 
+  private_dedicated_network_acl   = true
+  private_inbound_acl_rules       = local.private_inbound
+  private_outbound_acl_rules      = local.private_outbound
+
   manage_default_security_group = true
   default_security_group_tags   = { Name = "vpc-g3-bsmsapp-default" }
 
@@ -49,28 +92,9 @@ module "vpc_endpoints" {
       service         = "dynamodb"
       service_type    = "Gateway"
       route_table_ids = flatten([module.vpc.intra_route_table_ids, module.vpc.private_route_table_ids, module.vpc.public_route_table_ids])
-      policy          = data.aws_iam_policy_document.dynamodb_endpoint_policy.json # TODO: usar policy de abajo: (ahora lo estamos cargando a mano)
-#       {
-#     "Version": "2012-10-17",
-#     "Statement": [
-#         {
-#             "Principal": "*",
-#             "Effect": "Allow",
-#             "Action": [
-#                 "dynamodb:BatchGetItem",
-#                 "dynamodb:GetItem",
-#                 "dynamodb:Scan",
-#                 "dynamodb:Query",
-#                 "dynamodb:BatchWriteItem",
-#                 "dynamodb:PutItem",
-#                 "dynamodb:UpdateItem",
-#                 "dynamodb:DeleteItem"
-#             ],
-#             "Resource": "arn:aws:dynamodb:us-east-1:025685231147:table/AWSDynamoDB-g3"
-#         }
-#     ]
-# }
+      policy          = data.aws_iam_policy_document.this.json
       tags            = { Name = "dynamodb-vpc-endpoint" }
+      security_group_ids = [aws_security_group.dynamodb_sg.id]
     },
     lambda = {
       service             = "lambda"
@@ -90,10 +114,59 @@ module "vpc_endpoints" {
 # Supporting Resources
 ################################################################################
 
+resource "aws_vpc_endpoint" "dynamodb_endpoint" {
+  vpc_id       = module.vpc.vpc_id
+  service_name = "com.amazonaws.us-east-1.dynamodb"
+}
+
 data "aws_security_group" "default" {
   name   = "default"
   vpc_id = module.vpc.vpc_id
 }
+
+resource "aws_security_group" "dynamodb_sg" {
+  name_prefix = "vpc-g3-bsmsapp-dsg"
+  description = "Allow HTTPs outbound traffic"
+  vpc_id      = module.vpc.vpc_id
+
+  egress {
+    description = "HTTPs to DynamoDB"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    prefix_list_ids = [aws_vpc_endpoint.dynamodb_endpoint.prefix_list_id]
+  }
+
+  tags = {
+    Name = "vpc-g3-bsmsapp"
+  }
+}
+
+# resource "aws_network_acl" "private_nacl" {
+#   vpc_id = module.vpc.vpc_id
+
+#   egress {
+#     protocol   = "tcp"
+#     rule_no    = 200
+#     action     = "allow"
+#     cidr_block = ["10.0.1.0/24", "10.0.2.0/24"]
+#     from_port  = 443
+#     to_port    = 443
+#   }
+
+#   ingress {
+#     protocol   = "tcp"
+#     rule_no    = 100
+#     action     = "allow"
+#     cidr_block = ["10.0.1.0/24", "10.0.2.0/24"]
+#     from_port  = 80
+#     to_port    = 80
+#   }
+
+#   tags = {
+#     Name = "vpc-g3-bsmsapp"
+#   }
+# }
 
 data "aws_iam_policy_document" "dynamodb_endpoint_policy" {
   statement {
@@ -152,3 +225,4 @@ resource "aws_security_group" "vpc_tls" {
     Name = "vpc-g3-bsmsapp"
   }
 }
+
