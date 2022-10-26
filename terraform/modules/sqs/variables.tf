@@ -49,3 +49,9 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "lambda_name" {
+  description = "."
+  type        = string
+  default     = null
+}

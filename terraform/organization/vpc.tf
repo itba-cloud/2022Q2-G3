@@ -49,7 +49,27 @@ module "vpc_endpoints" {
       service         = "dynamodb"
       service_type    = "Gateway"
       route_table_ids = flatten([module.vpc.intra_route_table_ids, module.vpc.private_route_table_ids, module.vpc.public_route_table_ids])
-      policy          = data.aws_iam_policy_document.dynamodb_endpoint_policy.json
+      policy          = data.aws_iam_policy_document.dynamodb_endpoint_policy.json # TODO: usar policy de abajo: (ahora lo estamos cargando a mano)
+#       {
+#     "Version": "2012-10-17",
+#     "Statement": [
+#         {
+#             "Principal": "*",
+#             "Effect": "Allow",
+#             "Action": [
+#                 "dynamodb:BatchGetItem",
+#                 "dynamodb:GetItem",
+#                 "dynamodb:Scan",
+#                 "dynamodb:Query",
+#                 "dynamodb:BatchWriteItem",
+#                 "dynamodb:PutItem",
+#                 "dynamodb:UpdateItem",
+#                 "dynamodb:DeleteItem"
+#             ],
+#             "Resource": "arn:aws:dynamodb:us-east-1:025685231147:table/AWSDynamoDB-g3"
+#         }
+#     ]
+# }
       tags            = { Name = "dynamodb-vpc-endpoint" }
     },
     lambda = {
@@ -65,12 +85,6 @@ module "vpc_endpoints" {
     Endpoint = "true"
   }
 }
-
-# module "vpc_endpoints_nocreate" {
-#   source = "terraform-aws-modules/vpc/aws//modules/vpc"
-
-#   create = false
-# }
 
 ################################################################################
 # Supporting Resources

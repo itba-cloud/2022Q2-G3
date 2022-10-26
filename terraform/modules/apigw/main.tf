@@ -17,7 +17,7 @@ resource "aws_api_gateway_resource" "this" {
 resource "aws_api_gateway_method" "this" {
   rest_api_id   = aws_api_gateway_rest_api.this.id
   resource_id   = aws_api_gateway_resource.this.id
-  http_method   = "GET"
+  http_method   = "POST"
   authorization = "NONE"
 }
 
@@ -26,9 +26,32 @@ resource "aws_api_gateway_integration" "this" {
   resource_id             = aws_api_gateway_resource.this.id
   http_method             = aws_api_gateway_method.this.http_method
   integration_http_method = "POST"
-  type                    = "AWS_PROXY"
-  # uri                     = var.lambda_function_arn
-  uri                     = var.sqs_arn
+  type = "AWS"
+  credentials = var.role_arn
+  uri         = var.sqs_arn
+
+  request_parameters = {
+    "integration.request.header.Content-Type" = "'application/x-www-form-urlencoded'"
+  }
+
+  request_templates = {
+    "application/json" = <<EOF
+Action=SendMessage&MessageBody={
+  "method": "$context.httpMethod",
+  "body-json" : $input.json('$'),
+  "queryParams": {
+    #foreach($param in $input.params().querystring.keySet())
+    "$param": "$util.escapeJavaScript($input.params().querystring.get($param))" #if($foreach.hasNext),#end
+  #end
+  },
+  "pathParams": {
+    #foreach($param in $input.params().path.keySet())
+    "$param": "$util.escapeJavaScript($input.params().path.get($param))" #if($foreach.hasNext),#end
+    #end
+  }
+}
+EOF
+  }
 }
 
 resource "aws_api_gateway_deployment" "this" {
@@ -53,10 +76,17 @@ resource "aws_api_gateway_stage" "this" {
   stage_name    = "production"
 }
 
-resource "aws_lambda_permission" "this" {
-  statement_id  = "AllowExecutionFromAPIGateway"
-  action        = "lambda:InvokeFunction"
-  function_name = var.lambda_function_name
-  principal     = "apigateway.amazonaws.com"
-  source_arn    = "${var.lambda_source_arn}:${aws_api_gateway_rest_api.this.id}/*/${aws_api_gateway_method.this.http_method}${aws_api_gateway_resource.this.path}"
+resource "aws_api_gateway_method_response" "http200" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
+  resource_id = aws_api_gateway_resource.this.id
+  http_method = aws_api_gateway_method.this.http_method
+  status_code = 200
+}
+
+resource "aws_api_gateway_integration_response" "http200" {
+  rest_api_id       = aws_api_gateway_rest_api.this.id
+  resource_id       = aws_api_gateway_resource.this.id
+  http_method       = aws_api_gateway_method.this.http_method
+  status_code       = aws_api_gateway_method_response.http200.status_code
+  selection_pattern = "^2[0-9][0-9]"
 }

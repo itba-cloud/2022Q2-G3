@@ -9,6 +9,7 @@ resource "aws_lambda_function" "this" {
   handler       = var.handler
   runtime       = var.runtime
   tags          = var.tags
+  timeout       = 30
 
   dynamic "vpc_config" {
     for_each = var.vpc_subnet_ids != null && var.vpc_security_group_ids != null ? [true] : []
