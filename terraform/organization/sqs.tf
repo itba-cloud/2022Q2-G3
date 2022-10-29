@@ -5,8 +5,12 @@ module "sqs" {
     aws = aws.aws
   }
 
-  name = "AWS-SQS-g3"
-  lambda_name = "AWSLambdaHandler-${replace(local.bucket_name, "-", "")}"
+  depends_on = [
+    module.lambda
+  ]
+
+  name        = "AWS-SQS-g3"
+  lambda_name = module.lambda["lambdaSQS"].lambda_function_name
 
   tags = {
     name = "SQS"

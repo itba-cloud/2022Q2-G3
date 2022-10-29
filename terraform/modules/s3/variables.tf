@@ -13,14 +13,26 @@ variable "objects" {
   default     = {}
 }
 
+variable "website" {
+  type        = map(any)
+  description = ""
+  default     = {}
+}
+
 variable "block_public_access" {
   type        = bool
   default     = true
-  description = "Determines the S3 account-level Public Access Block configuration. For more information about these settings, see the AWS S3 documentation: https://docs.aws.amazon.com/AmazonS3/latest/dev/access-control-block-public-access.html"
+  description = "Determines the S3 account-level Public Access Block configuration."
 }
 
 variable "bucket_acl" {
   type        = string
   default     = "private"
-  description = "The canned ACL to apply. Valid values are private, public-read, public-read-write, aws-exec-read, authenticated-read, and log-delivery-write. Defaults to private. For more information about these settings, see the AWS S3 documentation: https://docs.aws.amazon.com/AmazonS3/latest/userguide/acl-overview.html#canned-acl"
+  description = "The canned ACL to apply. Valid values are private, public-read, public-read-write, aws-exec-read, authenticated-read, and log-delivery-write. Defaults to private."
+}
+
+variable "type" {
+  type        = number
+  default     = 1
+  description = "Determines the type of the bucket. 1 for static website and 2 for logs."
 }

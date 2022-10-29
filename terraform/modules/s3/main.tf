@@ -8,21 +8,47 @@ resource "aws_s3_bucket" "this" {
 }
 
 resource "aws_s3_bucket_policy" "this" {
-  count = var.objects != {} ? 1 : 0
+  count = var.type == 1 ? 1 : 0
 
   bucket = aws_s3_bucket.this.id
   policy = data.aws_iam_policy_document.this.json
 }
 
+resource "aws_s3_bucket_logging" "this" {
+  count = var.type == 2 ? 1 : 0
+  bucket = trimsuffix(var.bucket_name, "-logs")
+
+  target_bucket = aws_s3_bucket.this.id
+  target_prefix = "log/"
+}
+
 resource "aws_s3_bucket_website_configuration" "this" {
+  count = var.type == 1 ? 1 : 0
   bucket = aws_s3_bucket.this.id
 
-  index_document {
-    suffix = "index.html"
+  dynamic "index_document" {
+    for_each = try([var.website["index_document"]], [])
+
+    content {
+      suffix = index_document.value
+    }
   }
 
-  error_document {
-    key = "error.html"
+  dynamic "error_document" {
+    for_each = try([var.website["error_document"]], [])
+
+    content {
+      key = error_document.value
+    }
+  }
+
+  dynamic "redirect_all_requests_to" {
+    for_each = try([var.website["redirect_all_requests_to"]], [])
+
+    content {
+      host_name = redirect_all_requests_to.value.host_name
+      protocol  = try(redirect_all_requests_to.value.protocol, null)
+    }
   }
 }
 

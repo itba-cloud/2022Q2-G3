@@ -16,6 +16,6 @@ module "lambda" {
   package       = each.value.package
   iam_role      = each.value.role
 
-  vpc_subnet_ids         = module.vpc.public_subnets
-  vpc_security_group_ids = [module.vpc.default_security_group_id]
+  vpc_subnet_ids         = module.vpc.private_subnets
+  vpc_security_group_ids = [aws_security_group.dynamodb_sg.id]
 }
