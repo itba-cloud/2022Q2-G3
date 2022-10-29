@@ -34,5 +34,5 @@ variable "bucket_acl" {
 variable "type" {
   type        = number
   default     = 1
-  description = "Determines the type of the bucket. 1 for static website. 2 for logs."
+  description = "Determines the type of the bucket. 1 for static website and 2 for logs."
 }

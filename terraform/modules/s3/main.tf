@@ -8,7 +8,7 @@ resource "aws_s3_bucket" "this" {
 }
 
 resource "aws_s3_bucket_policy" "this" {
-  count = var.objects != {} ? 1 : 0
+  count = var.type == 1 ? 1 : 0
 
   bucket = aws_s3_bucket.this.id
   policy = data.aws_iam_policy_document.this.json

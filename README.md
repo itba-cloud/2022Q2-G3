@@ -66,6 +66,9 @@ Junto a cada función se especifica para qué se usa.
     + [modules/s3/main.tf](terraform/modules/s3/main.tf#L38)
     + [organization/cloudfront.tf](terraform/organization/cloudfront.tf#L13)
 
+- **trimsuffix**: remueve substring del final de un string.
+    + [modules/s3/main.tf](terraform/modules/s3/main.tf#L19)
+
 - **sha1**: computa el `SHA1` del string de la configuración del apigw para saber si se necesita forzar el redeploy del módulo.
     + [modules/apigw/main.tf](terraform/modules/apigw/main.tf#L103)
 

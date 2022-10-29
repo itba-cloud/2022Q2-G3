@@ -1,5 +1,5 @@
 locals {
-  bucket_name = "bsmsapp-itba-cloud-computing-g3-test"
+  bucket_name = "bsmsapp"
   path        = "../resources"
 
   s3 = {
