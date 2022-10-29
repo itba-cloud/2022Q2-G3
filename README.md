@@ -103,6 +103,10 @@ Los servicios que deben ser corregidos (asociados a la entrega del TP3) son los 
 
 <img src="docs/architecture.png" alt="architecture" width="800"/>
 
+## Demo
+
+<img src="docs/demo.gif" alt="demo" width="800"/>
+
 ## Rúbrica
 
 <table>
