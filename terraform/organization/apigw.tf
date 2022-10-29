@@ -9,7 +9,7 @@ module "apigw" {
     module.lambda, module.sqs
   ]
 
-  name        = "AWSAPIGateway-g3"
+  name = "AWSAPIGateway-g3"
 
   lambda = [
     {
@@ -21,7 +21,7 @@ module "apigw" {
   ]
 
   role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/LabRole"
-  sqs_arn  = "arn:aws:apigateway:${data.aws_region.current.name}:sqs:path/AWS-SQS-g3"
+  sqs_arn  = "arn:aws:apigateway:${data.aws_region.current.name}:sqs:path/${module.sqs.name}"
 
   tags = {
     name = "api-gateway-g3"

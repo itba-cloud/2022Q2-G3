@@ -9,7 +9,7 @@ module "sqs" {
     module.lambda
   ]
 
-  name = "AWS-SQS-g3"
+  name        = "AWS-SQS-g3"
   lambda_name = module.lambda["lambdaSQS"].lambda_function_name
 
   tags = {

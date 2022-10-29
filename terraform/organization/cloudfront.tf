@@ -1,12 +1,18 @@
 module "cloudfront" {
-  source     = "../modules/cloudfront"
-  depends_on = [module.s3, module.apigw]
+  source = "../modules/cloudfront"
 
   providers = {
     aws = aws.aws
   }
 
-  enabled = true
+  depends_on = [
+    module.s3,
+    module.apigw,
+    module.waf
+  ]
+
+  enabled    = true
+  web_acl_id = module.waf.web_acl_arn
 
   origin = {
     api-gateway = {

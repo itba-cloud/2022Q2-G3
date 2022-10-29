@@ -96,41 +96,6 @@ resource "aws_api_gateway_integration" "options" {
   depends_on = [aws_api_gateway_method.options]
 }
 
-resource "aws_api_gateway_deployment" "this" {
-  rest_api_id = aws_api_gateway_rest_api.this.id
-
-  triggers = {
-    redeployment = sha1(jsonencode([
-      aws_api_gateway_resource.this.id,
-      aws_api_gateway_method.this.id,
-      aws_api_gateway_method.options.id,
-      aws_api_gateway_method.stock_get.id,
-      aws_api_gateway_integration.this.id,
-      aws_api_gateway_integration.options.id,
-      aws_api_gateway_integration.stock_get.id,
-    ]))
-  }
-
-  lifecycle {
-    create_before_destroy = true
-  }
-
-  depends_on = [
-    aws_api_gateway_integration.options,
-    aws_api_gateway_integration.this,
-    aws_api_gateway_integration.stock_get,
-    aws_api_gateway_method.options,
-    aws_api_gateway_method.this,
-    aws_api_gateway_method.stock_get,
-    aws_api_gateway_method_response.options200,
-    aws_api_gateway_method_response.http200,
-    aws_api_gateway_method_response.stock200,
-    aws_api_gateway_integration_response.options200,
-    aws_api_gateway_integration_response.http200,
-    aws_api_gateway_integration_response.stock200,
-  ]
-}
-
 resource "aws_api_gateway_stage" "this" {
   deployment_id = aws_api_gateway_deployment.this.id
   rest_api_id   = aws_api_gateway_rest_api.this.id
@@ -219,6 +184,41 @@ resource "aws_api_gateway_integration_response" "options200" {
   }
 
   depends_on = [aws_api_gateway_method_response.options200]
+}
+
+resource "aws_api_gateway_deployment" "this" {
+  rest_api_id = aws_api_gateway_rest_api.this.id
+
+  triggers = {
+    redeployment = sha1(jsonencode([
+      aws_api_gateway_resource.this.id,
+      aws_api_gateway_method.this.id,
+      aws_api_gateway_method.options.id,
+      aws_api_gateway_method.stock_get.id,
+      aws_api_gateway_integration.this.id,
+      aws_api_gateway_integration.options.id,
+      aws_api_gateway_integration.stock_get.id,
+    ]))
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  depends_on = [
+    aws_api_gateway_integration.options,
+    aws_api_gateway_integration.this,
+    aws_api_gateway_integration.stock_get,
+    aws_api_gateway_method.options,
+    aws_api_gateway_method.this,
+    aws_api_gateway_method.stock_get,
+    aws_api_gateway_method_response.options200,
+    aws_api_gateway_method_response.http200,
+    aws_api_gateway_method_response.stock200,
+    aws_api_gateway_integration_response.options200,
+    aws_api_gateway_integration_response.http200,
+    aws_api_gateway_integration_response.stock200,
+  ]
 }
 
 resource "aws_lambda_permission" "this" {

@@ -3,9 +3,8 @@
 # ------------------------------------------------------------------------------
 
 variable "name" {
-  description = "This is the human-readable name of the queue. If omitted, Terraform will assign a random name."
+  description = "This is the human-readable name of the queue."
   type        = string
-  default     = null
 }
 
 variable "message_retention_seconds" {

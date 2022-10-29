@@ -16,15 +16,15 @@
         <form id="myForm" class="form-style">
             <ul>
                 <li>
-                    <input value="0" name="id" type="number" />
+                    <input value="0" name="id" type="number" min="0"/>
                     <span>Enter the product identifier.</span>
                 </li>
                 <li>
-                    <input value="0" name="stock" type="number" />
+                    <input value="0" name="stock" type="number" min="0"/>
                     <span>Enter the new stock number.</span>
                 </li>
                 <li>
-                    <input type="submit" value="Upload" />
+                    <input type="submit" value="Upload"/>
                 </li>
             </ul>
         </form>
@@ -95,7 +95,11 @@
         }
 
         var el = document.getElementById("table");
-        el.innerHTML = "";
+        if (!list.length) {
+            el.innerHTML = "No items."
+        } else {
+            el.innerHTML = "";
+        }
         el.appendChild(table);
     }
 

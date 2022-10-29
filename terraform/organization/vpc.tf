@@ -1,29 +1,6 @@
-locals {
-  private_inbound = [
-      {
-        rule_number = 100
-        rule_action = "allow"
-        from_port   = 1024
-        to_port     = 65535
-        protocol    = "tcp"
-        cidr_block  = "0.0.0.0/0"
-      }
-  ]
-  private_outbound = [
-      {
-        rule_number = 100
-        rule_action = "allow"
-        from_port   = 443
-        to_port     = 443
-        protocol    = "tcp"
-        cidr_block  = "0.0.0.0/0"
-      }
-  ]
-}
-
-################################################################################
+# ------------------------------------------------------------------------------
 # VPC Module (from terraform-aws-modules)
-################################################################################
+# ------------------------------------------------------------------------------
 
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
@@ -47,9 +24,9 @@ module "vpc" {
   manage_default_route_table = true
   default_route_table_tags   = { Name = "vpc-g3-bsmsapp-default" }
 
-  private_dedicated_network_acl   = true
-  private_inbound_acl_rules       = local.private_inbound
-  private_outbound_acl_rules      = local.private_outbound
+  private_dedicated_network_acl = true
+  private_inbound_acl_rules     = local.private_inbound
+  private_outbound_acl_rules    = local.private_outbound
 
   manage_default_security_group = true
   default_security_group_tags   = { Name = "vpc-g3-bsmsapp-default" }
@@ -73,24 +50,20 @@ module "vpc_endpoints" {
 
   endpoints = {
     dynamodb = {
-      service         = "dynamodb"
-      service_type    = "Gateway"
-      route_table_ids = flatten([module.vpc.private_route_table_ids])
-      policy          = data.aws_iam_policy_document.this.json
-      tags            = { Name = "dynamodb-vpc-endpoint" }
+      service            = "dynamodb"
+      service_type       = "Gateway"
+      route_table_ids    = flatten([module.vpc.private_route_table_ids])
+      policy             = data.aws_iam_policy_document.this.json
+      tags               = { Name = "dynamodb-vpc-endpoint" }
       security_group_ids = [aws_security_group.dynamodb_sg.id]
     }
   }
 
   tags = {
-    Name = "vpc-g3-bsmsapp"
+    Name     = "vpc-g3-bsmsapp"
     Endpoint = "true"
   }
 }
-
-################################################################################
-# Supporting Resources
-################################################################################
 
 resource "aws_vpc_endpoint" "dynamodb_endpoint" {
   vpc_id       = module.vpc.vpc_id
@@ -108,10 +81,10 @@ resource "aws_security_group" "dynamodb_sg" {
   vpc_id      = module.vpc.vpc_id
 
   egress {
-    description = "HTTPs to DynamoDB"
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
+    description     = "HTTPs to DynamoDB"
+    from_port       = 443
+    to_port         = 443
+    protocol        = "tcp"
     prefix_list_ids = [aws_vpc_endpoint.dynamodb_endpoint.prefix_list_id]
   }
 
