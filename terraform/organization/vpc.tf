@@ -75,21 +75,15 @@ module "vpc_endpoints" {
     dynamodb = {
       service         = "dynamodb"
       service_type    = "Gateway"
-      route_table_ids = flatten([module.vpc.intra_route_table_ids, module.vpc.private_route_table_ids, module.vpc.public_route_table_ids])
+      route_table_ids = flatten([module.vpc.private_route_table_ids])
       policy          = data.aws_iam_policy_document.this.json
       tags            = { Name = "dynamodb-vpc-endpoint" }
       security_group_ids = [aws_security_group.dynamodb_sg.id]
-    },
-    lambda = {
-      service             = "lambda"
-      private_dns_enabled = true
-      subnet_ids          = module.vpc.private_subnets
-    },
+    }
   }
 
   tags = {
     Name = "vpc-g3-bsmsapp"
-    Project  = "Secret"
     Endpoint = "true"
   }
 }
@@ -126,46 +120,6 @@ resource "aws_security_group" "dynamodb_sg" {
   }
 }
 
-data "aws_iam_policy_document" "dynamodb_endpoint_policy" {
-  statement {
-    effect    = "Deny"
-    actions   = ["dynamodb:*"]
-    resources = ["*"]
-
-    principals {
-      type        = "*"
-      identifiers = ["*"]
-    }
-
-    condition {
-      test     = "StringNotEquals"
-      variable = "aws:sourceVpce"
-
-      values = [module.vpc.vpc_id]
-    }
-  }
-}
-
-data "aws_iam_policy_document" "generic_endpoint_policy" {
-  statement {
-    effect    = "Deny"
-    actions   = ["*"]
-    resources = ["*"]
-
-    principals {
-      type        = "*"
-      identifiers = ["*"]
-    }
-
-    condition {
-      test     = "StringNotEquals"
-      variable = "aws:SourceVpc"
-
-      values = [module.vpc.vpc_id]
-    }
-  }
-}
-
 resource "aws_security_group" "vpc_tls" {
   name_prefix = "vpc-g3-bsmsapp-vpc_tls"
   description = "Allow TLS inbound traffic"
@@ -183,7 +137,3 @@ resource "aws_security_group" "vpc_tls" {
     Name = "vpc-g3-bsmsapp"
   }
 }
-
-# output "aws_security_group_dynamodb" {
-#   value       = aws_security_group.dynamodb_sg.id
-# }

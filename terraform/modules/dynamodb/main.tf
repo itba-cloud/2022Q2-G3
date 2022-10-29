@@ -17,6 +17,7 @@ resource "aws_dynamodb_table" "this" {
     }
   }
 
-  hash_key = var.hash_key
-  tags     = var.tags
+  hash_key  = var.hash_key
+  range_key = var.range_key
+  tags      = var.tags
 }

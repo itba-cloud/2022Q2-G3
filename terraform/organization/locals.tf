@@ -4,8 +4,15 @@ locals {
 
   s3 = {
     website = {
+      type = 1
       bucket_name = local.bucket_name
+      bucket_acl = "public-read"
       path        = "../resources"
+
+      website = {
+        index_document = "index.html"
+        error_document = "error.html"
+      }
 
       objects = {
         error = {
@@ -24,11 +31,22 @@ locals {
     }
 
     www-website = {
+      type = 1
+      website = {
+        redirect_all_requests_to = {
+          host_name = "${local.bucket_name}.s3-website-${data.aws_region.current.name}.amazonaws.com"
+          protocol = "http"
+        }
+      }
+
       bucket_name = "www.${local.bucket_name}"
+      bucket_acl = "public-read"
     }
 
     logs = {
+      type = 2
       bucket_name = "${local.bucket_name}-logs"
+      bucket_acl = "log-delivery-write"
     }
   }
 

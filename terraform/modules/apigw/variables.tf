@@ -8,12 +8,6 @@ variable "name" {
   default     = ""
 }
 
-variable "description" {
-  description = "The description of the API."
-  type        = string
-  default     = null
-}
-
 variable "tags" {
   description = "A mapping of tags to assign to API gateway resources."
   type        = map(string)
@@ -21,13 +15,16 @@ variable "tags" {
 }
 
 variable "sqs_arn" {
-  type = string
+  description = "ARN of the SQS."
+  type        = string
 }
 
 variable "role_arn" {
-  type = string
+  description = "ARN of the IAM role (credentials)."
+  type        = string
 }
 
 variable "lambda" {
-  type = list(any)
+  description = "List of lambdas the API will execute."
+  type        = list(any)
 }
