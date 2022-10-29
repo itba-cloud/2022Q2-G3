@@ -20,11 +20,16 @@ data "template_file" "userdata" {
 data "aws_iam_policy_document" "this" {
   statement {
     effect  = "Allow"
-    actions = ["dynamodb:PutItem"]
+    actions = [
+      "dynamodb:PutItem",
+      "dynamodb:Scan",
+      "dynamodb:GetItem",
+      "dynamodb:UpdateItem"
+    ]
     principals {
       type        = "AWS"
       identifiers = ["*"]
     }
-    resources = ["arn:aws:dynamodb:us-east-1:478157316333:table/AWSDynamoDB-g3"]
+    resources = ["arn:aws:dynamodb:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:table/AWSDynamoDB-g3"]
   }
 }

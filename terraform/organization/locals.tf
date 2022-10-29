@@ -1,5 +1,5 @@
 locals {
-  bucket_name = "b123123123123-itba-cloud-computing-g3-test"
+  bucket_name = "bsmsapp-itba-cloud-computing-g3-test"
   path        = "../resources"
 
   s3 = {
@@ -33,9 +33,16 @@ locals {
   }
 
   lambdas = {
-    lambda = {
-      package       = "${local.path}/lambda/lambda.zip"
-      function_name = "AWSLambdaHandler-${replace(local.bucket_name, "-", "")}"
+    lambdaSQS = {
+      package       = "${local.path}/lambda/lambdaSQS.zip"
+      function_name = "AWSLambdaHandlerAPISQSDBg3test"
+      role          = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/LabRole"
+      handler       = "lambda_handler.main"
+      runtime       = "python3.9"
+    },
+    lambdaDB = {
+      package       = "${local.path}/lambda/lambdaDB.zip"
+      function_name = "AWSLambdaHandlerAPIDBg3test"
       role          = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/LabRole"
       handler       = "lambda_handler.main"
       runtime       = "python3.9"

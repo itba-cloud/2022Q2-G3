@@ -3,19 +3,11 @@ locals {
       {
         rule_number = 100
         rule_action = "allow"
-        from_port   = 80
-        to_port     = 80
+        from_port   = 1024
+        to_port     = 65535
         protocol    = "tcp"
-        cidr_block  = "10.0.1.0/24"
-      },
-      {
-        rule_number = 110
-        rule_action = "allow"
-        from_port   = 80
-        to_port     = 80
-        protocol    = "tcp"
-        cidr_block  = "10.0.2.0/24"
-      },
+        cidr_block  = "0.0.0.0/0"
+      }
   ]
   private_outbound = [
       {
@@ -24,16 +16,8 @@ locals {
         from_port   = 443
         to_port     = 443
         protocol    = "tcp"
-        cidr_block  = "10.0.1.0/24"
-      },
-      {
-        rule_number = 110
-        rule_action = "allow"
-        from_port   = 443
-        to_port     = 443
-        protocol    = "tcp"
-        cidr_block  = "10.0.2.0/24"
-      },
+        cidr_block  = "0.0.0.0/0"
+      }
   ]
 }
 
@@ -142,32 +126,6 @@ resource "aws_security_group" "dynamodb_sg" {
   }
 }
 
-# resource "aws_network_acl" "private_nacl" {
-#   vpc_id = module.vpc.vpc_id
-
-#   egress {
-#     protocol   = "tcp"
-#     rule_no    = 200
-#     action     = "allow"
-#     cidr_block = ["10.0.1.0/24", "10.0.2.0/24"]
-#     from_port  = 443
-#     to_port    = 443
-#   }
-
-#   ingress {
-#     protocol   = "tcp"
-#     rule_no    = 100
-#     action     = "allow"
-#     cidr_block = ["10.0.1.0/24", "10.0.2.0/24"]
-#     from_port  = 80
-#     to_port    = 80
-#   }
-
-#   tags = {
-#     Name = "vpc-g3-bsmsapp"
-#   }
-# }
-
 data "aws_iam_policy_document" "dynamodb_endpoint_policy" {
   statement {
     effect    = "Deny"
@@ -226,3 +184,6 @@ resource "aws_security_group" "vpc_tls" {
   }
 }
 
+# output "aws_security_group_dynamodb" {
+#   value       = aws_security_group.dynamodb_sg.id
+# }
