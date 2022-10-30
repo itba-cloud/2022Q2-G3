@@ -53,14 +53,14 @@ locals {
   lambdas = {
     lambdaSQS = {
       package       = "${local.path}/lambda/lambdaSQS.zip"
-      function_name = "AWSLambdaHandlerAPISQSDBg3test"
+      function_name = "AWSLambdaHandlerAPISQSDBg3"
       role          = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/LabRole"
       handler       = "lambda_handler.main"
       runtime       = "python3.9"
     },
     lambdaDB = {
       package       = "${local.path}/lambda/lambdaDB.zip"
-      function_name = "AWSLambdaHandlerAPIDBg3test"
+      function_name = "AWSLambdaHandlerAPIDBg3"
       role          = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/LabRole"
       handler       = "lambda_handler.main"
       runtime       = "python3.9"

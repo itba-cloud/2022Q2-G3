@@ -45,6 +45,10 @@ module "vpc" {
 module "vpc_endpoints" {
   source = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
 
+  depends_on = [
+    module.dynamodb
+  ]
+
   vpc_id             = module.vpc.vpc_id
   security_group_ids = [data.aws_security_group.default.id]
 
