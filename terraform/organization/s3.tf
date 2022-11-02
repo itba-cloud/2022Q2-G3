@@ -6,11 +6,11 @@ module "s3" {
     aws = aws.aws
   }
 
-  bucket_name   = each.value.bucket_name
-  type          = each.value.type
-  website       = try(each.value.website, {})
-  objects       = try(each.value.objects, {})
-  bucket_acl    = each.value.bucket_acl
+  bucket_name = each.value.bucket_name
+  type        = each.value.type
+  website     = try(each.value.website, {})
+  objects     = try(each.value.objects, {})
+  bucket_acl  = each.value.bucket_acl
 }
 
 resource "aws_s3_object" "this" {
