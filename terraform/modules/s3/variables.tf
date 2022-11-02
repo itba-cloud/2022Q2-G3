@@ -9,13 +9,13 @@ variable "bucket_name" {
 
 variable "objects" {
   type        = map(any)
-  description = ""
+  description = "Map of objects to upload to the bucket."
   default     = {}
 }
 
 variable "website" {
   type        = map(any)
-  description = ""
+  description = "Map that defines the configuration of the website."
   default     = {}
 }
 
@@ -35,4 +35,14 @@ variable "type" {
   type        = number
   default     = 1
   description = "Determines the type of the bucket. 1 for static website and 2 for logs."
+}
+
+variable "website_id" {
+  description = "Website bucket ID."
+  type        = string
+}
+
+variable "content" {
+  description = "Website bucket content."
+  type        = string
 }

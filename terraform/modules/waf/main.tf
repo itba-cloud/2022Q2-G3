@@ -10,72 +10,33 @@ resource "aws_wafv2_web_acl" "this" {
     allow {}
   }
 
-  rule {
-    name     = "AWS-AWSManagedRulesCommonRuleSet"
-    priority = 1
+  dynamic "rule" {
+    for_each = var.rule
 
-    override_action {
-      none {}
-    }
+    content {
+      name     = rule.value.name
+      priority = rule.value.priority
 
-    statement {
-      managed_rule_group_statement {
-        name        = "AWSManagedRulesCommonRuleSet"
-        vendor_name = "AWS"
+      override_action {
+        none {}
       }
-    }
 
-    visibility_config {
-      cloudwatch_metrics_enabled = true
-      metric_name                = "AWS-AWSManagedRulesCommonRuleSet"
-      sampled_requests_enabled   = true
+      statement {
+        managed_rule_group_statement {
+          name        = rule.value.managed_rule_group_statement
+          vendor_name = "AWS"
+        }
+      }
+
+
+      visibility_config {
+        cloudwatch_metrics_enabled = true
+        metric_name                = rule.value.metric_name
+        sampled_requests_enabled   = true
+      }
+
     }
   }
-
-  rule {
-    name     = "AWS-AWSManagedRulesLinuxRuleSet"
-    priority = 2
-
-    statement {
-      managed_rule_group_statement {
-        name        = "AWSManagedRulesLinuxRuleSet"
-        vendor_name = "AWS"
-      }
-    }
-
-    override_action {
-      none {}
-    }
-
-    visibility_config {
-      cloudwatch_metrics_enabled = true
-      metric_name                = "AWS-AWSManagedRulesLinuxRuleSet"
-      sampled_requests_enabled   = true
-    }
-  }
-
-  rule {
-    name     = "AWS-AWSManagedRulesKnownBadInputsRuleSet"
-    priority = 3
-
-    override_action {
-      none {}
-    }
-
-    statement {
-      managed_rule_group_statement {
-        name        = "AWSManagedRulesKnownBadInputsRuleSet"
-        vendor_name = "AWS"
-      }
-    }
-
-    visibility_config {
-      cloudwatch_metrics_enabled = true
-      metric_name                = "AWS-AWSManagedRulesKnownBadInputsRuleSet"
-      sampled_requests_enabled   = true
-    }
-  }
-
 
   visibility_config {
     cloudwatch_metrics_enabled = true

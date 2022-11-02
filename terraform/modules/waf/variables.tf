@@ -17,3 +17,9 @@ variable "scope" {
   description = "WAF scope (cloudfront or regional)."
   type        = string
 }
+
+variable "rule" {
+  description = "Map of WAF rules."
+  type        = map(any)
+  default     = {}
+}

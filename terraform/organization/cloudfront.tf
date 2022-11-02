@@ -7,8 +7,7 @@ module "cloudfront" {
 
   depends_on = [
     module.s3,
-    module.apigw,
-    module.waf
+    module.apigw
   ]
 
   enabled    = true
@@ -16,7 +15,7 @@ module "cloudfront" {
 
   origin = {
     api-gateway = {
-      domain_name = replace(replace(module.apigw.api_endpoint, "https://", ""), "/", "")
+      domain_name = replace(replace(module.apigw.endpoint, "https://", ""), "/", "")
 
       custom_origin_config = {
         http_port              = 80
