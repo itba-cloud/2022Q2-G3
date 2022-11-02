@@ -15,7 +15,7 @@ resource "aws_s3_bucket_policy" "this" {
 }
 
 resource "aws_s3_bucket_logging" "this" {
-  count = var.type == 2 ? 1 : 0
+  count  = var.type == 2 ? 1 : 0
   bucket = trimsuffix(var.bucket_name, "-logs")
 
   target_bucket = aws_s3_bucket.this.id
@@ -23,7 +23,7 @@ resource "aws_s3_bucket_logging" "this" {
 }
 
 resource "aws_s3_bucket_website_configuration" "this" {
-  count = var.type == 1 ? 1 : 0
+  count  = var.type == 1 ? 1 : 0
   bucket = aws_s3_bucket.this.id
 
   dynamic "index_document" {
@@ -65,4 +65,13 @@ resource "aws_s3_object" "this" {
   source        = try(each.value.rendered, format("./../resources/%s", each.value.filename))
   content_type  = each.value.content_type
   storage_class = try(each.value.tier, "STANDARD")
+}
+
+resource "aws_s3_object" "index" {
+  count         = length(try([var.website["index_document"]], [])) > 0 ? 1 : 0
+  bucket        = var.website_id
+  key           = "index.html"
+  content       = var.content
+  content_type  = "text/html"
+  storage_class = "STANDARD"
 }

@@ -13,13 +13,13 @@ data "aws_caller_identity" "current" {
 data "template_file" "userdata" {
   template = file("${path.module}/html/index.html")
   vars = {
-    ENDPOINT = "${module.apigw.api_endpoint}"
+    ENDPOINT = "${module.apigw.endpoint}"
   }
 }
 
 data "aws_iam_policy_document" "this" {
   statement {
-    effect  = "Allow"
+    effect = "Allow"
     actions = [
       "dynamodb:PutItem",
       "dynamodb:Scan",

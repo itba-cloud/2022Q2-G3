@@ -5,19 +5,19 @@
 variable "web_acl_id" {
   description = "Id or ARN of the AWS WAF web ACL that is associated with the distribution."
   type        = string
-  default     = null
+  nullable    = false
 }
 
 variable "tags" {
   description = "A map of tags to assign to the resource."
   type        = map(string)
-  default     = null
+  default     = {}
 }
 
 variable "origin" {
   description = "One or more origins for this distribution."
   type        = any
-  default     = null
+  nullable    = false
 }
 
 variable "default_root_object" {
@@ -29,7 +29,7 @@ variable "default_root_object" {
 variable "default_cache_behavior" {
   description = "The default cache behavior for this distribution"
   type        = any
-  default     = null
+  nullable    = false
 }
 
 variable "enabled" {

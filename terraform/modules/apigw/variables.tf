@@ -5,7 +5,6 @@
 variable "name" {
   description = "The name of the API."
   type        = string
-  default     = ""
 }
 
 variable "tags" {
@@ -27,4 +26,24 @@ variable "role_arn" {
 variable "lambda" {
   description = "List of lambdas the API will execute."
   type        = list(any)
+}
+
+variable "method" {
+  description = "Map of API gateway methods."
+  type        = map(any)
+}
+
+variable "integration" {
+  description = "Map of API gateway integrations."
+  type        = map(any)
+}
+
+variable "method_response" {
+  description = "Map of API gateway method response."
+  type        = map(any)
+}
+
+variable "integration_response" {
+  description = "Map of API gateway method integrations."
+  type        = map(any)
 }
