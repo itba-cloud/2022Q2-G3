@@ -4,9 +4,12 @@ repos:
   hooks:
     - id: terraform_fmt
     - id: terraform_docs
+      args:
+        - --args=--output-file=README.md
     - id: terraform_checkov
     - id: terraform_tflint
     - id: terraform_tfsec
     - id: terrascan
     - id: tfupdate
-    # - id: terraform_validate
+    - id: terraform_validate
+
